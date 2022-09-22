@@ -1,0 +1,21 @@
+<nav class="navbar navbar-expand-lg navbar-light">
+    <div id="navbarNavDropdown">
+      <ul class="navbar-nav">
+        <li class="nav-item active">
+            <a routerLink="/home" style="font-size: 30px; font-weight: bolder; margin-left: 2%; margin-right: 2%;" class="navbar-brand">Home</a>
+        </li> 
+        <li class="nav-item active">
+          <a routerLink="/create-root" style="font-size: 30px; font-weight: bolder;" class="nav-link">Issue root</a>
+        </li> 
+        <li class="nav-item active">
+          <a routerLink="/create-certificate" style="font-size: 30px; font-weight: bolder;" class="nav-link">Issue certificate</a>
+        </li>   
+        <li class="nav-item active">
+            <a routerLink="/home" style="font-size: 30px; font-weight: bolder;" class="nav-link">Download my keystore</a>
+        </li>  
+        <li class="nav-item active" style="float:right">
+            <a routerLink="/home" style="font-size: 30px; font-weight: bolder;" (click)="logout()" class="nav-link">Log out</a>
+        </li>
+      </ul>
+    </div>
+</nav>

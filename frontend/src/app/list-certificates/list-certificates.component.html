@@ -1,0 +1,31 @@
+<div style="display: flex;  justify-content: center; margin-top: 5%;">
+    <table class="table caption-top">
+      <thead>
+        <tr>
+          <th scope="col">Serial</th>
+          <th scope="col">Alias</th>
+          <th scope="col">Common Name </th>
+          <th scope="col">Organisation Name</th>
+          <th scope="col">Organisation Unit</th>
+          <th scope="col">Valid From</th>
+          <th scope="col">Valid To</th>
+          <th scope="col">Issuer</th>
+          <th scope="col">Revoke</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let c of certificates">
+          <td>{{c.serialNumber}}</td>  
+          <td>{{c.alias}}</td>
+          <td>{{c.commonName}}</td>
+          <td>{{c.organisationName}}</td>
+          <td>{{c.organisationUnit}}</td>
+          <td>{{c.validFrom | date:'shortDate'}}</td>
+          <td>{{c.validUntil | date:'shortDate'}}</td>
+          <td *ngIf="!c.issuer">SELF SIGNED</td>
+          <td *ngIf="c.issuer">{{c.issuer.serialNumber}}</td>
+          <td><input type="button" value="Revoke" *ngIf="!c.revoked" (click)="revokeCertificate(c.serialNumber)"/></td>
+        </tr>
+      </tbody>
+    </table>
+</div>

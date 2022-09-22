@@ -1,0 +1,139 @@
+<div class="register-show">
+    <h1>New Certificate</h1>
+    <div class="col-md-6">
+        <label class="input_label">
+          <span class="keep_hovered">Alias: </span>
+          <input type="text" name="alias" [(ngModel)]="CertDTO.alias" required="required">
+        </label>
+    </div>
+    <div class="col-md-6">
+        <label class="input_label">
+            <span class="keep_hovered">Keystore Password: </span>
+            <input type="password" name="keystorePassword" [(ngModel)]="CertDTO.keystorePass" required="required">
+        </label>
+    </div>
+    <div class="col-md-6">
+        <label class="input_label">
+            <span class="keep_hovered">Private Key Password: </span>
+            <input type="password" name="privateKeyPass" [(ngModel)]="CertDTO.privateKeyPass" required="required">
+        </label>
+    </div>
+    <div class="col-md-6">
+        <label class="input_label">
+          <span class="keep_hovered">Type: </span>
+          <select [(ngModel)]="CertDTO.type">
+            <option value="SUBCA">CA</option>
+            <option value="EE">End Entity</option>
+          </select>
+        </label>
+    </div>
+    <div class="col-md-6">
+        <label class="input_label">
+          <span class="keep_hovered">Valid From: </span>
+          <input type="date" name="validFrom" [(ngModel)]="CertDTO.validFrom" required="required">
+        </label>
+    </div>
+    <div class="col-md-6">
+        <label class="input_label">
+          <span class="keep_hovered">Valid Until: </span>
+          <input type="date" name="validUntil" [(ngModel)]="CertDTO.validUntil" required="required">
+        </label>
+    </div>
+    <div class="col-md-6">
+        <label class="input_label">
+          <span class="keep_hovered">Common Name: </span>
+          <input type="text" name="commonName" [(ngModel)]="CertDTO.commonName" required="required">
+        </label>
+    </div>
+    <div class="col-md-6">
+        <label class="input_label">
+          <span class="keep_hovered">Organization Name: </span>
+          <input type="text" name="organizationName" [(ngModel)]="CertDTO.organisationName" required="required">
+        </label>
+    </div>
+    <div class="col-md-6">
+        <label class="input_label">
+          <span class="keep_hovered">Organisation Unit: </span>
+          <input type="text" name="organisationUnit" [(ngModel)]="CertDTO.organisationUnit" required="required">
+        </label>
+    </div>
+    <div class="col-md-6">
+        <label class="input_label">
+          <span class="keep_hovered">Email: </span>
+          <input type="text" name="email" [(ngModel)]="CertDTO.email" required="required">
+        </label>
+    </div>
+    <div class="col-md-6">
+        <label class="input_label">
+          <span class="keep_hovered">Server Alternative Names: </span>
+          <input type="text" name="san" [(ngModel)]="san" required="required">
+        </label>
+        <button (click)="addSan()">Add SAN</button>
+    </div>
+    <ul>
+        <li *ngFor="let san of CertDTO.serverAlternativeNames">{{san}}</li>
+    </ul>
+
+    <div>
+        <h3>Key Usage:</h3>
+        <table>
+            <tr>
+                <td><span class="keep_hovered">Digital Signature: </span></td>
+                <td class="input"><input [(ngModel)]="CertDTO.digitalSignature" type="checkbox"/></td>
+            </tr>
+            <tr>
+                <td><span class="keep_hovered">Non Repudiation: </span></td>
+                <td class="input"><input [(ngModel)]="CertDTO.nonRepudiation" type="checkbox"/></td>
+            </tr>
+            <tr>
+                <td><span class="keep_hovered">Key Encipherment: </span></td>
+                <td class="input"><input [(ngModel)]="CertDTO.keyEncipherment" type="checkbox"/></td>
+            </tr>
+            <tr>
+                <td><span class="keep_hovered">Data Encipherment: </span></td>
+                <td class="input"><input [(ngModel)]="CertDTO.dataEncipherment" type="checkbox"/></td>
+            </tr>
+            <tr>
+                <td><span class="keep_hovered">Key Agreement: </span></td>
+                <td class="input"><input [(ngModel)]="CertDTO.keyAgreement" type="checkbox"/></td>
+            </tr>
+            <tr>
+                <td><span class="keep_hovered">KeyCertSign: </span></td>
+                <td class="input"><input [(ngModel)]="CertDTO.keyCertSign" type="checkbox"/></td>
+            </tr>
+            <tr>
+                <td><span class="keep_hovered">cRL Sign: </span></td>
+                <td class="input"><input [(ngModel)]="CertDTO.cRLSign" type="checkbox"/></td>
+            </tr>
+            <tr>
+                <td><span class="keep_hovered">Encipher Only: </span></td>
+                <td class="input"><input [(ngModel)]="CertDTO.encipherOnly" type="checkbox"/></td>
+            </tr>
+            <tr>
+                <td><span class="keep_hovered">Decipher Only: </span></td>
+                <td class="input"><input [(ngModel)]="CertDTO.decipherOnly" type="checkbox"/></td>
+            </tr>
+        </table>
+    </div>
+    <h3>Issuer Information:</h3>
+    <div class="col-md-6">
+        <label class="input_label">
+            <span class="keep_hovered">Issuer Keystore Password: </span>
+            <input type="password" name="issuerKeystorePass" [(ngModel)]="CertDTO.issuerKeystorePass" required="required">
+        </label>
+    </div>
+    <div class="col-md-6">
+        <label class="input_label">
+            <span class="keep_hovered">Issuer Private Key Password: </span>
+            <input type="password" name="issuerPrivateKeyPass" [(ngModel)]="CertDTO.issuerPrivateKeyPass" required="required">
+        </label>
+    </div>
+    <div class="col-md-6">
+        <label class="input_label">
+            <span class="keep_hovered">Issuer Serial: </span>
+            <input type="text" name="issuerPrivateKeyPass" [(ngModel)]="CertDTO.issuerSerial" required="required">
+        </label>
+    </div>
+
+    <button style="width: 100%;" (click)="log()">Create</button>
+</div>

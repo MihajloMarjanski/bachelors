@@ -1,0 +1,34 @@
+<div class="container-fluid">
+    <div class="row mt-3">
+      <div class="col-md-4">
+      </div>
+      <div class="col-md-4">
+        <div class="card">
+
+            <!--Header-->
+            <div class="header gradient-blue">
+                <div class="row d-flex justify-content-center">
+                    <h3 class="text-white mb-1 mt-1 font-weight-bold">Login</h3>
+                </div>
+            </div>
+            <table>
+                <tr>
+                    <td><span class="keep_hovered">Alias: </span></td>
+                    <td class="input"><input type="text" name="username" [(ngModel)]="LoginDTO.alias" required="required" id="username"></td>
+                </tr>
+                <tr>
+                    <td><span class="keep_hovered">Private Key Password: </span></td>
+                    <td class="input"><input type="password" name="password" [(ngModel)]="LoginDTO.privateKeyPassword" required="required" id="pass"></td>
+                </tr>
+            </table>
+            <div class="row d-flex">
+                <div class="col-md-8"></div>
+                <div class="col-md-4">
+                    <button (click)="login()" [disabled]="!contentIsValid()" class="btn btn-blue btn-rounded" style="width: 100%;" id="loginBtn">Login</button>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2"></div>
+</div>
