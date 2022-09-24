@@ -20,6 +20,7 @@ export class CreateRootComponent implements OnInit {
   }
 
   CertDTO = {
+    serial:22,
     alias: "",
     keystorePass:"",
     privateKeyPass : "",

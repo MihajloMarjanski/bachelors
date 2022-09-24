@@ -29,6 +29,7 @@ export class AddCertificateComponent implements OnInit {
   san =""
 
   CertDTO = {
+    serial:55,
     alias: "",
     keystorePass:"",
     privateKeyPass : "",
@@ -54,6 +55,7 @@ export class AddCertificateComponent implements OnInit {
     issuerKeystorePass:"",
     issuerPrivateKeyPass : "",
     issuerSerial : "",
+    issuerAlias : "ROOT",
 
   }
 

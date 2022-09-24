@@ -51,7 +51,7 @@ public class CerficiateController {
 	
 	@CrossOrigin
 	@GetMapping(value = "/getAll")
-    public ResponseEntity<List<Certificate>> findByBoatId() {
+    public ResponseEntity<List<Certificate>> getAll() {
 		return new ResponseEntity<>(certificateService.getAll(), HttpStatus.OK);
 	}
 	
