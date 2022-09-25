@@ -51,7 +51,10 @@ public class CreateRootDTO {
 		this.encipherOnly = encipherOnly;
 		this.decipherOnly = decipherOnly;
 	}
-	
+	public CreateRootDTO() {
+		super();
+
+	}
 	public Integer getSerial() {
 		return serial;
 	}

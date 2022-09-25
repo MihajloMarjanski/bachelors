@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -64,7 +65,9 @@ public class CerficiateController {
 			return new ResponseEntity<>(validationError, HttpStatus.BAD_REQUEST);
 		}
 		if(PasswordValidator.isValid(certificate.getKeystorePass()) && PasswordValidator.isValid(certificate.getPrivateKeyPass())) {
-			certificateService.saveRoot(certificate);
+			Certificate cert = certificateService.saveRoot(certificate);
+			certificate.setSerial(cert.getSerialNumber());
+			certificateService.issueRoot(certificate);
 			return new ResponseEntity<>(certificate, HttpStatus.CREATED);
 		}
 		else {
@@ -80,10 +83,17 @@ public class CerficiateController {
 			return new ResponseEntity<>(validationError, HttpStatus.BAD_REQUEST);
 		}
 		if(PasswordValidator.isValid(certificate.getKeystorePass()) && PasswordValidator.isValid(certificate.getPrivateKeyPass())) {
-			certificateService.saveSub(certificate);
+			Certificate cert = certificateService.saveSub(certificate);
+			certificate.setSerial(cert.getSerialNumber());
+			certificateService.issueSub(certificate);
 			return new ResponseEntity<>(certificate, HttpStatus.CREATED);
 		}
 		else {
 			return new ResponseEntity<>("Passwords must be stronger", HttpStatus.BAD_REQUEST);
 		}}
+	
+	@GetMapping(value = "/revokeCert/{certificateToRevokeSerialNumber}")
+	public ResponseEntity<String> revokeCert(@PathVariable int certificateToRevokeSerialNumber) {
+		return certificateService.revokeCert(certificateToRevokeSerialNumber);
+	}
 }

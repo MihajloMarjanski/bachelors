@@ -11,6 +11,7 @@
           <th scope="col">Valid To</th>
           <th scope="col">Issuer</th>
           <th scope="col">Revoke</th>
+          <th scope="col">Download JKS</th>
         </tr>
       </thead>
       <tbody>
@@ -25,6 +26,7 @@
           <td *ngIf="!c.issuer">SELF SIGNED</td>
           <td *ngIf="c.issuer">{{c.issuer.serialNumber}}</td>
           <td><input type="button" value="Revoke" *ngIf="!c.revoked" (click)="revokeCertificate(c.serialNumber)"/></td>
+          <td><input type="button" value="Download" (click)="download(c.alias)"/></td>
         </tr>
       </tbody>
     </table>

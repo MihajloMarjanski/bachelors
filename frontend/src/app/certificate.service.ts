@@ -16,6 +16,18 @@ export class CertificateService {
       headers: headers
     };
   } 
+  getDownalodOptions() : any {
+    const headers = {
+      'Content-Type': 'application/json',
+      'Authorization' : 'Bearer ' + localStorage.getItem("token")
+    }
+    const requestOptions: Object = {
+      headers: headers,
+      responseType: 'arraybuffer'
+    };
+    return requestOptions
+  } 
+
 
   constructor(private http: HttpClient) { }
 
@@ -34,4 +46,13 @@ export class CertificateService {
   getAll(): Observable<any> {
     return this.http.get<any>("http://localhost:8080/api/certificates/getAll", this.getAuthoHeader() );
   }
+
+  getJKS(alias : String): Observable<any> {
+    return this.http.get<any>("http://localhost:8090/api/certificates/jks/"+alias,this.getDownalodOptions());
+  }
+
+  revokeCertificate(serial: any): Observable<any> {
+    return this.http.get<any>("http://localhost:8080/api/certificates/revokeCert/"+serial,this.getAuthoHeader());
+  }
+
 }

@@ -4,6 +4,7 @@ import java.util.Date;
 
 public class CreateRootDTO {
 	
+	private Integer serial;
 	private String alias;
 	private String keystorePass;
 	private String privateKeyPass;
@@ -50,6 +51,17 @@ public class CreateRootDTO {
 		this.encipherOnly = encipherOnly;
 		this.decipherOnly = decipherOnly;
 	}
+	public CreateRootDTO() {
+		super();
+	}
+	public Integer getSerial() {
+		return serial;
+	}
+
+	public void setSerial(Integer serial) {
+		this.serial = serial;
+	}
+
 	public String getAlias() {
 		return alias;
 	}

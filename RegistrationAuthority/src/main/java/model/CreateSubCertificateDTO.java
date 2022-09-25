@@ -3,7 +3,8 @@ package model;
 import java.util.Date;
 import java.util.List;
 
-public class CreateSubCertificateDTO {	
+public class CreateSubCertificateDTO {
+	private Integer serial;
 	private String alias;
 	private String keystorePass;
 	private String privateKeyPass;
@@ -29,6 +30,7 @@ public class CreateSubCertificateDTO {
 	private String issuerKeystorePass;
 	private String issuerPrivateKeyPass;
 	private Integer issuerSerial;
+	private String issuerAlias;
 	
 	
 	public CreateSubCertificateDTO(String alias, String keystorePass, String privateKeyPass, CertificateType type,
@@ -60,6 +62,28 @@ public class CreateSubCertificateDTO {
 		this.decipherOnly = decipherOnly;
 		this.issuerKeystorePass = issuerKeystorePass;
 		this.issuerPrivateKeyPass = issuerPrivateKeyPass;
+	}
+	public CreateSubCertificateDTO() {
+		super();
+	}
+
+	public Integer getSerial() {
+		return serial;
+	}
+
+
+	public void setSerial(Integer serial) {
+		this.serial = serial;
+	}
+
+
+	public String getIssuerAlias() {
+		return issuerAlias;
+	}
+
+
+	public void setIssuerAlias(String issuerAlias) {
+		this.issuerAlias = issuerAlias;
 	}
 
 

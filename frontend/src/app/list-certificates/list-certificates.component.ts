@@ -27,8 +27,8 @@ export class ListCertificatesComponent implements OnInit {
   }
 
   revokeCertificate(serialNumber: number) {
-    /*this._certificateService.revokeCertificate(serialNumber).subscribe(data => console.log("Revoked"),
-      error => console.log(error));*/
+    this._certificateService.revokeCertificate(serialNumber).subscribe(data => console.log("Revoked"),
+      error => console.log(error));
   }
 
   logout(){
@@ -41,15 +41,16 @@ export class ListCertificatesComponent implements OnInit {
   }
 
   download(alias : string){
-    /*this._certificateService.downloadCertificate(alias).subscribe(response =>{
-
-      let fileName = response.headers.get('content-disposition')?.split(';')[1].split('=')[1];
-      fileName = alias+'.cer'
-      let blob:Blob = response.body as Blob;
+    this._certificateService.getJKS(alias).subscribe(response =>{
+      //let fileName = response.headers.get('content-disposition')?.split(';')[1].split('=')[1];
+      let fileName = alias+'.zip'
+      let blob = new Blob([response], {
+        type: 'application/zip'
+      });
       let a = document.createElement('a');
       a.download = fileName;
       a.href = window.URL.createObjectURL(blob);
       a.click();
-    });*/
+    });
   }
 }

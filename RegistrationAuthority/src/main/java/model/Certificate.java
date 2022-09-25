@@ -108,7 +108,17 @@ public class Certificate{
 		this.validUntil = validUntil;
 		this.revoked = revoked;
 	}
-
+	public boolean isInIssuerHierarchy(int issuerSerial) {
+		if(this.serialNumber == issuerSerial)
+			return true;
+		if(this.issuer == null)
+			return false;
+		if(this.issuer.getSerialNumber() == issuerSerial) {
+			return true;
+		}
+		return issuer.isInIssuerHierarchy(issuerSerial);
+	}
+	
 	public Boolean getRevoked() {
 		return revoked;
 	}

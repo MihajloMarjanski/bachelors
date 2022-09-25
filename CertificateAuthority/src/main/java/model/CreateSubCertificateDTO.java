@@ -64,7 +64,9 @@ public class CreateSubCertificateDTO {
 		this.issuerPrivateKeyPass = issuerPrivateKeyPass;
 	}
 
-
+	public CreateSubCertificateDTO() {
+		super();
+	}
 	public String getIssuerAlias() {
 		return issuerAlias;
 	}
