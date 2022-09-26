@@ -58,8 +58,8 @@ public class CertificateGenerator {
 				certGen.addExtension(Extension.basicConstraints, true, new BasicConstraints(false));
 			}
 			if(!root) {
-	        	AccessDescription ocspAd = new AccessDescription(X509ObjectIdentifiers.id_ad_ocsp, new GeneralName(GeneralName.uniformResourceIdentifier, "http://localhost:8090/api/certificates/ocsp"));
-	        	AccessDescription caAd = new AccessDescription(X509ObjectIdentifiers.id_ad_caIssuers,new GeneralName(GeneralName.uniformResourceIdentifier, "http://localhost:8080/api/certificates/"+issuerAlias+".cer"));
+	        	AccessDescription ocspAd = new AccessDescription(X509ObjectIdentifiers.id_ad_ocsp, new GeneralName(GeneralName.uniformResourceIdentifier, "http://localhost:8070/api/certificates/ocsp"));
+	        	AccessDescription caAd = new AccessDescription(X509ObjectIdentifiers.id_ad_caIssuers,new GeneralName(GeneralName.uniformResourceIdentifier, "http://localhost:8090/api/certificates/"+issuerAlias+".cer"));
 	        	AccessDescription[] accessArray = {ocspAd,caAd};
 		        
 		        AuthorityInformationAccess authInfo = new AuthorityInformationAccess(accessArray);
@@ -131,8 +131,8 @@ public class CertificateGenerator {
 			
 			
 	        if(!root) {
-	        	AccessDescription ocspAd = new AccessDescription(X509ObjectIdentifiers.id_ad_ocsp, new GeneralName(GeneralName.uniformResourceIdentifier, "http://localhost:8080/api/certificates/ocsp"));
-	        	AccessDescription caAd = new AccessDescription(X509ObjectIdentifiers.id_ad_caIssuers,new GeneralName(GeneralName.uniformResourceIdentifier, "http://localhost:8080/api/certificates/"+issuerAlias+".cer"));
+	        	AccessDescription ocspAd = new AccessDescription(X509ObjectIdentifiers.id_ad_ocsp, new GeneralName(GeneralName.uniformResourceIdentifier, "http://localhost:8070/api/certificates/ocsp"));
+	        	AccessDescription caAd = new AccessDescription(X509ObjectIdentifiers.id_ad_caIssuers,new GeneralName(GeneralName.uniformResourceIdentifier, "http://localhost:8090/api/certificates/"+issuerAlias+".cer"));
 	        	AccessDescription[] accessArray = {ocspAd,caAd};
 		        
 		        AuthorityInformationAccess authInfo = new AuthorityInformationAccess(accessArray);

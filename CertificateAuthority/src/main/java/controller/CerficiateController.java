@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -90,10 +89,6 @@ public class CerficiateController {
 			e.printStackTrace();
 			return null;
 		}
-
-
-	    
-		//return new FileSystemResource(file);
 		
 	}
 	@CrossOrigin
@@ -127,46 +122,4 @@ public class CerficiateController {
 	                zipOutputStream.close();
 	            });
 	}
-		/*String path = "keystores"+File.separator+alias+".jks";
-		File file = new File(path);
-		try {
-		    Path paths = Paths.get(file.getAbsolutePath());
-		    ByteArrayResource resource;
-			resource = new ByteArrayResource(Files.readAllBytes(paths));
-			HttpHeaders headers = new HttpHeaders();
-		    //headers.setContentDispositionFormData(alias+".jks", alias+".jks");
-		    //headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
-		    return ResponseEntity.ok()
-		            .headers(headers)
-		            .contentLength(file.length())
-		            .contentType(MediaType.APPLICATION_)
-		            .body(resource);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
-		}
-*/
-	    /* byte[] contents;
-		try {
-			
-			contents = Files.readAllBytes(file.toPath());
-			HttpHeaders headers = new HttpHeaders();
-			headers.add("Content-Type", "application/octet-stream");
-		    headers.setContentDispositionFormData(alias+".jks", alias+".jks");
-		    headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
-		    ResponseEntity<byte[]> response = new ResponseEntity<>(contents, headers, HttpStatus.OK);
-		    return response;
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
-		}*/
-
-
-	    
-		//return new FileSystemResource(file);
-		
-	//}
-	
 }
