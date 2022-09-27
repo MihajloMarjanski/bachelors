@@ -25,6 +25,7 @@ import java.security.cert.X509Certificate;
 import java.security.cert.X509Extension;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.InvalidKeySpecException;
+import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.text.ParseException;
 import java.util.Base64;
@@ -70,11 +71,17 @@ import org.bouncycastle.operator.jcajce.JcaDigestCalculatorProviderBuilder;
 import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemReader;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import helper.KeyStoreReader;
 import model.Certificate;
 import model.CertificateType;
+import model.KeyPairRequestDTO;
+import model.KeyPairResponseDTO;
 import model.PublicKeyResponseDTO;
 import repo.CertificateRepo;
 
@@ -83,22 +90,70 @@ public class CertificateService {
 	
 	@Autowired
 	private CertificateRepo certificateRepo;
-
+	
+	
+	private boolean checkRevoked(int serial) {
+		Certificate cert = certificateRepo.findById(serial).get();
+		return cert.getRevoked();
+	}
+	public Integer getRootOf(int serial) {
+		Certificate cert = certificateRepo.findById(serial).get();
+		return cert.findRoot(cert);
+	}
+	
+	private KeyPairResponseDTO getKeyPair(int serial) {
+		RestTemplate restTemplate = new RestTemplate();
+		HttpEntity<KeyPairRequestDTO> request = new HttpEntity<>(new KeyPairRequestDTO(serial));
+		ResponseEntity<KeyPairResponseDTO> response = restTemplate
+		  .exchange("http://localhost:8090/api/certificates/KeyPair", HttpMethod.POST, request, KeyPairResponseDTO.class);
+		return response.getBody();
+	}
+	
+	private PublicKey getPublicFromKeyPair(KeyPairResponseDTO keyPair) {
+		try {
+			KeyFactory keyFactory2 = KeyFactory.getInstance("RSA");
+			X509EncodedKeySpec publicKeySpec2 = new X509EncodedKeySpec(Base64.getDecoder().decode(keyPair.getPublicKEyBase64()));
+			PublicKey publicKey2 = keyFactory2.generatePublic(publicKeySpec2);
+			return publicKey2;
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvalidKeySpecException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	private PrivateKey getPrivateFromKeyPair(KeyPairResponseDTO keyPair) {
+		try {
+			KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+			PKCS8EncodedKeySpec privateKeySpec = new PKCS8EncodedKeySpec(Base64.getDecoder().decode(keyPair.getPrivateKEyBase64()));
+			PrivateKey privateKey = keyFactory.generatePrivate(privateKeySpec);
+			return privateKey;
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvalidKeySpecException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	public OCSPResp generateOCSPResponse( OCSPReq request) throws NoSuchProviderException, OCSPException, IOException, OperatorCreationException {
-		 
-		KeyStoreReader reader = new KeyStoreReader();
-		java.security.cert.Certificate x = reader.readCertificate("keystores" + File.separator + "ROOT.jks", "PeraMikaZika123!!", "ROOT");
-        PrivateKey privateKey = reader.readPrivateKey("keystores" + File.separator + "ROOT.jks", "PeraMikaZika123!!", "ROOT", "PeraMikaZika123!!");
-        byte[] encoded = x.getPublicKey().getEncoded();
+        final Req[] requested = request.getRequestList();
+	    final org.bouncycastle.asn1.x509.Extension nonce = request.getExtension(OCSPObjectIdentifiers.id_pkix_ocsp_nonce);
+        
+	    KeyPairResponseDTO keyPair = getKeyPair(getRootOf(requested[0].getCertID().getSerialNumber().intValue()));
+	    PublicKey publicKey = getPublicFromKeyPair(keyPair);
+	    PrivateKey privateKey = getPrivateFromKeyPair(keyPair);
+	    
         SubjectPublicKeyInfo subjectPublicKeyInfo = SubjectPublicKeyInfo.getInstance(
-                ASN1Sequence.getInstance(encoded));
+                ASN1Sequence.getInstance(publicKey.getEncoded()));
 		
         AsymmetricKeyParameter privateKeyAsymKeyParam = PrivateKeyFactory.createKey(privateKey.getEncoded());
-        final org.bouncycastle.cert.ocsp.CertificateStatus certStatus;
-        certStatus = new RevokedStatus(new RevokedInfo(new ASN1GeneralizedTime(new Date()), null));
         
-		final Req[] requested = request.getRequestList();
-	    final org.bouncycastle.asn1.x509.Extension nonce = request.getExtension(OCSPObjectIdentifiers.id_pkix_ocsp_nonce);
 
 	    final DigestCalculator sha1Calculator = new JcaDigestCalculatorProviderBuilder().build()
 	            .get(AlgorithmIdentifier.getInstance(RespID.HASH_SHA1));
@@ -113,7 +168,14 @@ public class CertificateService {
 	        final CertificateID certId = req.getCertID();
 
 	        final BigInteger certificateSerialNumber = certId.getSerialNumber();
-	        responseBuilder.addResponse(certId, certStatus);
+	        if(checkRevoked(certificateSerialNumber.intValue())) {
+	        	org.bouncycastle.cert.ocsp.CertificateStatus certStatus;
+	            certStatus = new RevokedStatus(new RevokedInfo(new ASN1GeneralizedTime(new Date()), null));
+		        responseBuilder.addResponse(certId, certStatus);
+	        }
+	        else {
+	        	responseBuilder.addResponse(certId, CertificateStatus.GOOD);
+	        }
 	    }
 
 	    final ContentSigner contentSigner = new BcRSAContentSignerBuilder(

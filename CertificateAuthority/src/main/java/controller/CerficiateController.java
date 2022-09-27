@@ -32,6 +32,8 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
 
 import model.CreateRootDTO;
 import model.CreateSubCertificateDTO;
+import model.KeyPairRequestDTO;
+import model.KeyPairResponseDTO;
 import model.PublicKeyResponseDTO;
 import service.CertificateService;
 
@@ -48,12 +50,18 @@ public class CerficiateController {
 		return new ResponseEntity<>(certificateService.print(), HttpStatus.OK);
 	}
 	
-	@CrossOrigin
-	@GetMapping(value = "PublicKey/{key_serial}")
-    public ResponseEntity<PublicKeyResponseDTO> getPublicKey(@PathVariable("key_serial") Integer serial) {
-		return new ResponseEntity<>(certificateService.getPublicKey(serial), HttpStatus.OK);
-	}
+	/*@CrossOrigin
+	@GetMapping(value = "KeyPair/{key_serial}")
+    public ResponseEntity<KeyPairResponseDTO> getPublicKey(@PathVariable("key_serial") Integer serial) {
+		return new ResponseEntity<>(certificateService.getKeyPair(serial), HttpStatus.OK);
+	}*/
 
+	@CrossOrigin
+	@PostMapping(consumes = "application/json", value = "/KeyPair")
+	public ResponseEntity<KeyPairResponseDTO> getKeyPair(@RequestBody KeyPairRequestDTO request) {
+		return new ResponseEntity<>(certificateService.getKeyPair(request.getSerial()), HttpStatus.OK);
+	}
+	
 	@CrossOrigin
 	@PostMapping(consumes = "application/json", value = "/createRoot")
 	public ResponseEntity<Object> createRoot(@RequestBody CreateRootDTO certificate) {

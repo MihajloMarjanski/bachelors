@@ -82,6 +82,23 @@ public class Certificate{
 		return issuer.isInIssuerHierarchy(issuerSerial);
 	}
 	
+	public Integer findRoot(Certificate cert) {
+		if(cert.getType() == CertificateType.ROOT) {
+			return cert.getSerialNumber();
+		}
+		return issuer.findRoot(issuer);
+	}
+	
+	
+	@Override
+	public String toString() {
+		return "Certificate [serialNumber=" + serialNumber + ", type=" + type + ", commonName=" + commonName
+				+ ", organisationUnit=" + organisationUnit + ", organisationName=" + organisationName + ", email="
+				+ email + ", alias=" + alias + ", issuer=" + issuer + ", privateKeyPass=" + privateKeyPass
+				+ ", keystorePass=" + keystorePass + ", validFrom=" + validFrom + ", validUntil=" + validUntil
+				+ ", revoked=" + revoked + "]";
+	}
+
 	public Boolean getRevoked() {
 		return revoked;
 	}

@@ -21,6 +21,7 @@ import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.InvalidKeySpecException;
+import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.text.ParseException;
 import java.util.Base64;
@@ -46,6 +47,7 @@ import helper.SubjectData;
 import model.CertificateType;
 import model.CreateRootDTO;
 import model.CreateSubCertificateDTO;
+import model.KeyPairResponseDTO;
 import model.PublicKeyResponseDTO;
 
 @Service
@@ -162,8 +164,12 @@ public class CertificateService {
 	private void saveToFiles(CreateRootDTO certificate) {
 		KeyStoreReader reader = new KeyStoreReader();
 		java.security.cert.Certificate x = reader.readCertificate("keystores" + File.separator + certificate.getAlias() +".jks", certificate.getKeystorePass(), certificate.getAlias());
+		PrivateKey privateKey = reader.readPrivateKey("keystores" + File.separator + certificate.getAlias() +".jks", certificate.getKeystorePass(), certificate.getAlias(), certificate.getPrivateKeyPass());
 		try {
-            final FileOutputStream os = new FileOutputStream("certificates"+File.separator+certificate.getAlias()+".cer");
+			File file3 = new File("certificates"+File.separator+certificate.getAlias()+".cer");
+    		file3.getParentFile().mkdirs();
+    		file3.createNewFile();
+            final FileOutputStream os = new FileOutputStream(file3,false);
             os.write("-----BEGIN CERTIFICATE-----\n".getBytes("US-ASCII"));
             os.write(org.apache.tomcat.util.codec.binary.Base64.encodeBase64(x.getEncoded(),true));
             os.write("-----END CERTIFICATE-----\n".getBytes("US-ASCII"));
@@ -171,15 +177,23 @@ public class CertificateService {
             
     		X509EncodedKeySpec x509EncodedKeySpec = new X509EncodedKeySpec(
     				x.getPublicKey().getEncoded());
-    		FileOutputStream fos = new FileOutputStream("publickeys"+File.separator+certificate.getSerial()+".key");
+    		File file2 = new File("publickeys"+File.separator+certificate.getSerial()+".key");
+    		file2.getParentFile().mkdirs();
+    		file2.createNewFile();
+    		FileOutputStream fos = new FileOutputStream(file2,false);
     		fos.write(x509EncodedKeySpec.getEncoded());
     		fos.close();
             
-            /*final FileOutputStream os2 = new FileOutputStream("publickeys"+File.separator+certificate.getSerial()+".pem");
-            os2.write("-----BEGIN PUBLIC KEY-----\n".getBytes("US-ASCII"));
-            os2.write(org.apache.tomcat.util.codec.binary.Base64.encodeBase64(x.getPublicKey().getEncoded(),true));
-            os2.write("-----END PUBLIC KEY-----\n".getBytes("US-ASCII"));
-            os2.close();*/
+    		PKCS8EncodedKeySpec pkcs8EncodedKeySpec = new PKCS8EncodedKeySpec(
+    				privateKey.getEncoded());
+    		File file = new File("privatekeys"+File.separator+certificate.getSerial()+".key");
+    		file.getParentFile().mkdirs();
+    		file.createNewFile();
+    		fos = new FileOutputStream(file,false);
+    		fos.write(pkcs8EncodedKeySpec.getEncoded());
+    		fos.close();
+    		
+    		
         } catch (CertificateEncodingException | IOException e) {
             e.printStackTrace();
         }
@@ -187,8 +201,12 @@ public class CertificateService {
 	private void saveToFiles(CreateSubCertificateDTO certificate) {
 		KeyStoreReader reader = new KeyStoreReader();
 		java.security.cert.Certificate x = reader.readCertificate("keystores" + File.separator + certificate.getAlias() +".jks", certificate.getKeystorePass(), certificate.getAlias());
+		PrivateKey privateKey = reader.readPrivateKey("keystores" + File.separator + certificate.getAlias() +".jks", certificate.getKeystorePass(), certificate.getAlias(), certificate.getPrivateKeyPass());
 		try {
-            final FileOutputStream os = new FileOutputStream("certificates"+File.separator+certificate.getAlias()+".cer");
+			File file3 = new File("certificates"+File.separator+certificate.getAlias()+".cer");
+    		file3.getParentFile().mkdirs();
+    		file3.createNewFile();
+            final FileOutputStream os = new FileOutputStream(file3,false);
             os.write("-----BEGIN CERTIFICATE-----\n".getBytes("US-ASCII"));
             os.write(org.apache.tomcat.util.codec.binary.Base64.encodeBase64(x.getEncoded(),true));
             os.write("-----END CERTIFICATE-----\n".getBytes("US-ASCII"));
@@ -196,35 +214,53 @@ public class CertificateService {
             
     		X509EncodedKeySpec x509EncodedKeySpec = new X509EncodedKeySpec(
     				x.getPublicKey().getEncoded());
-    		FileOutputStream fos = new FileOutputStream("publickeys"+File.separator+certificate.getSerial()+".key");
+    		File file2 = new File("publickeys"+File.separator+certificate.getSerial()+".key");
+    		file2.getParentFile().mkdirs();
+    		file2.createNewFile();
+    		FileOutputStream fos = new FileOutputStream(file2,false);
     		fos.write(x509EncodedKeySpec.getEncoded());
     		fos.close();
+    		 
+    		PKCS8EncodedKeySpec pkcs8EncodedKeySpec = new PKCS8EncodedKeySpec(
+    				privateKey.getEncoded());
+    		File file = new File("privatekeys"+File.separator+certificate.getSerial()+".key");
+    		file.getParentFile().mkdirs();
+    		file.createNewFile();
+    		fos = new FileOutputStream(file,false);
+    		fos.write(pkcs8EncodedKeySpec.getEncoded());
+    		fos.close();
     		
-            /*final FileOutputStream os2 = new FileOutputStream("publickeys"+File.separator+certificate.getSerial()+".pem");
-            os2.write("-----BEGIN PUBLIC KEY-----\n".getBytes("US-ASCII"));
-            os2.write(org.apache.tomcat.util.codec.binary.Base64.encodeBase64(x.getPublicKey().getEncoded(),true));
-            os2.write("-----END PUBLIC KEY-----\n".getBytes("US-ASCII"));
-            os2.close(); */    
         } catch (CertificateEncodingException | IOException e) {
             e.printStackTrace();
         }
 	}
-	public PublicKeyResponseDTO getPublicKey(Integer serial) {
-		
+	
+	public KeyPairResponseDTO getKeyPair(Integer serial) {
+		KeyPairResponseDTO keyPair = new KeyPairResponseDTO();
 		try {
 			File filePublicKey = new File("publickeys"+File.separator+serial+".key");
 			FileInputStream fis = new FileInputStream("publickeys"+File.separator+serial+".key");
 			byte[] encodedPublicKey = new byte[(int) filePublicKey.length()];
 			fis.read(encodedPublicKey);
 			fis.close();
-			
-			System.out.println("da");
 			KeyFactory keyFactory = KeyFactory.getInstance("RSA");
 			X509EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(
 					encodedPublicKey);
 			PublicKey publicKey = keyFactory.generatePublic(publicKeySpec);
-			System.out.println("jeste");
-			System.out.println(publicKey.getEncoded());
+			keyPair.setPublicKEyBase64(Base64.getEncoder().encodeToString(publicKey.getEncoded()));
+			
+			File filePrivateKey = new File("privatekeys"+File.separator+serial+".key");
+			FileInputStream fis2 = new FileInputStream("privatekeys"+File.separator+serial+".key");
+			byte[] encodedPrivateKey = new byte[(int) filePrivateKey.length()];
+			fis2.read(encodedPrivateKey);
+			fis2.close();
+			
+			PKCS8EncodedKeySpec privateKeySpec = new PKCS8EncodedKeySpec(
+					encodedPrivateKey);
+			PrivateKey privateKey = keyFactory.generatePrivate(privateKeySpec);
+			keyPair.setPrivateKEyBase64(Base64.getEncoder().encodeToString(privateKey.getEncoded()));
+			
+			
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -238,68 +274,10 @@ public class CertificateService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		/*String path = "publickeys"+File.separator+serial.toString() + ".pem";
-		File file = new File(path);
-	    String key = "";
-	    String publicKeyPEM = "";
-		try {
-			key = new String(Files.readAllBytes(file.toPath()), Charset.defaultCharset());
-		    publicKeyPEM = key
-		  	      .replace("-----BEGIN PUBLIC KEY-----", "")
-		  	      .replaceAll(System.lineSeparator(), "")
-		  	      .replace("-----END PUBLIC KEY-----", "")
-		  	      .replace("\n", "").replace("\r", "");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		System.out.println(publicKeyPEM);
-		PublicKeyResponseDTO response = new PublicKeyResponseDTO(publicKeyPEM);
-		RSAPublicKey publicKey = readPublicKey(file);
-		publicKey.toString();
-		return response;*/
-		return null;
+		return keyPair;
 	}
-	/*public RSAPublicKey readPublicKey(File file) {
-	    try (FileReader keyReader = new FileReader(file);
-	      PemReader pemReader = new PemReader(keyReader)) {
-	    	KeyFactory factory = KeyFactory.getInstance("RSA");
-	        PemObject pemObject = pemReader.readPemObject();
-	        byte[] content = pemObject.getContent();
-	        X509EncodedKeySpec pubKeySpec = new X509EncodedKeySpec(content);
-	        return (RSAPublicKey) factory.generatePublic(pubKeySpec);
-	    } catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InvalidKeySpecException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	    return null;
-	}
-	private PublicKey getKey(String key){
-	    try{
-	    	byte[] byteKey = org.apache.tomcat.util.codec.binary.Base64.decodeBase64(key);
-	        X509EncodedKeySpec X509publicKey = new X509EncodedKeySpec(byteKey);
-	        KeyFactory kf = KeyFactory.getInstance("RSA");
-
-	        return kf.generatePublic(X509publicKey);
-	    }
-	    catch(Exception e){
-	        e.printStackTrace();
-	    }
-
-	    return null;
-	}*/
-
 	
+
 	private int generateKeyUsage(CreateRootDTO certificate) {
 		int usage = 0;
 		if(certificate.getDigitalSignature()) {

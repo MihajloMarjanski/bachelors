@@ -38,6 +38,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
+
+import model.Certificate;
 import model.PublicKeyResponseDTO;
 import service.CertificateService;
 
@@ -47,6 +49,13 @@ public class CerficiateController {
 	
 	@Autowired
 	private CertificateService certificateService;
+	
+	@CrossOrigin
+	@GetMapping(value = "/getRoot/{serial}")
+    public ResponseEntity<Integer> getAll(@PathVariable("serial") Integer serial) {
+		return new ResponseEntity<>(certificateService.getRootOf(serial), HttpStatus.OK);
+	}
+	
 	
 	@PostMapping(consumes = "application/ocsp-request", value = "/ocsp", produces = "application/ocsp-response")
 	public byte[] ocsp(@RequestBody byte[] reqBytes) throws IOException {
