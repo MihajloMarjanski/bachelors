@@ -105,7 +105,7 @@ public class CertificateService {
 		RestTemplate restTemplate = new RestTemplate();
 		HttpEntity<KeyPairRequestDTO> request = new HttpEntity<>(new KeyPairRequestDTO(serial));
 		ResponseEntity<KeyPairResponseDTO> response = restTemplate
-		  .exchange("http://localhost:8090/api/certificates/KeyPair", HttpMethod.POST, request, KeyPairResponseDTO.class);
+		  .exchange("http://certificate-authority:8090/api/certificates/KeyPair", HttpMethod.POST, request, KeyPairResponseDTO.class);
 		return response.getBody();
 	}
 	

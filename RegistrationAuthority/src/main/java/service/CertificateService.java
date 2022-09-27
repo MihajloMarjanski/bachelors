@@ -51,7 +51,7 @@ public class CertificateService {
 		RestTemplate restTemplate = new RestTemplate();
 		HttpEntity<CreateRootDTO> request = new HttpEntity<>(certificate);
 		ResponseEntity<CreateRootDTO> response = restTemplate
-		  .exchange("http://localhost:8090/api/certificates/createRoot", HttpMethod.POST, request, CreateRootDTO.class);
+		  .exchange("http://certificate-authority:8090/api/certificates/createRoot", HttpMethod.POST, request, CreateRootDTO.class);
 	}
 	public void issueSub(CreateSubCertificateDTO certificate) {
 		System.out.println(certificate.getSerial().toString());
@@ -59,7 +59,7 @@ public class CertificateService {
 		RestTemplate restTemplate = new RestTemplate();
 		HttpEntity<CreateSubCertificateDTO> request = new HttpEntity<>(certificate);
 		ResponseEntity<CreateSubCertificateDTO> response = restTemplate
-		  .exchange("http://localhost:8090/api/certificates/createSub", HttpMethod.POST, request, CreateSubCertificateDTO.class);
+		  .exchange("http://certificate-authority:8090/api/certificates/createSub", HttpMethod.POST, request, CreateSubCertificateDTO.class);
 	}
 	public Certificate saveRoot(CreateRootDTO dto) {
 		Certificate certificate = new Certificate(dto,generateSerial());

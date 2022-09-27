@@ -1,5 +1,6 @@
 package helper;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -12,6 +13,8 @@ import java.security.PrivateKey;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 
+import org.apache.tomcat.util.http.fileupload.FileUtils;
+
 public class KeyStoreWriter {
 	//KeyStore je Java klasa za citanje specijalizovanih datoteka koje se koriste za cuvanje kljuceva
 	//Tri tipa entiteta koji se obicno nalaze u ovakvim datotekama su:
@@ -22,10 +25,14 @@ public class KeyStoreWriter {
 	
 	public KeyStoreWriter() {
 		try {
+			FileUtils.forceMkdir(new File("keystores"));
 			keyStore = KeyStore.getInstance("JKS", "SUN");
 		} catch (KeyStoreException e) {
 			e.printStackTrace();
 		} catch (NoSuchProviderException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

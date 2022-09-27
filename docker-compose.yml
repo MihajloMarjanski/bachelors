@@ -1,0 +1,53 @@
+version: "3.7"
+services:
+  certificate-authority:
+    hostname: certificate-authority
+    image: certificate-authority
+    build:
+      context: CertificateAuthority/
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - 8090:8090
+    networks:
+      - backend
+    
+  validation-authority:
+    hostname: validation-authority
+    image: validation-authority
+    build:
+      context: ValidationAuthority/
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - 8070:8070
+    networks:
+      - backend
+  registration-authority:
+    hostname: registration-authority
+    image: registration-authority
+    build:
+      context: RegistrationAuthority/
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - 8080:8080
+    networks:
+      - backend
+
+  certb:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_USER: PKI
+      POSTGRES_PASSWORD: ftn
+      POSTGRES_DB: RegistrationAuthority
+    ports:
+      - 4002:5432
+    networks:
+      - backend
+
+networks:
+  backend:
+    name: pki
+    driver: bridge 
