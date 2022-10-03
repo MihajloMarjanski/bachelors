@@ -19,6 +19,7 @@ import model.CertificateType;
 import model.CreateRootDTO;
 import model.CreateSubCertificateDTO;
 import model.PasswordValidator;
+import model.RevokeDTO;
 import repo.CertificateRepo;
 
 @Service
@@ -89,6 +90,9 @@ public class CertificateService {
 	
 	public String checkSubDTOValidity(CreateSubCertificateDTO dto) {
 		Certificate issuer = certificateRepo.findById(dto.getIssuerSerial()).get();
+		if(issuer.getRevoked()) {
+			return "Issuer revoked";
+		}
 		if(issuer.getType() != CertificateType.ROOT && issuer.getType() != CertificateType.SUBCA) {
 			return "Specified issuer can not issue any certificates";
 		}
@@ -165,6 +169,30 @@ public class CertificateService {
 		}
 		
 		return serial;
+	}
+
+	public boolean authorizeRevoke(RevokeDTO dto) {
+		Certificate cert = certificateRepo.findById(dto.getCertificateSerial()).get();
+		if(cert.getType() == CertificateType.ROOT) {
+			if(!BCrypt.checkpw(dto.getIssuerPrivateKeyPass(), cert.getPrivateKeyPass()) || !BCrypt.checkpw(dto.getIssuerKeystorePass(), cert.getKeystorePass())) {
+				return false;
+			}
+
+			if(cert.getSerialNumber() != dto.getIssuerSerial()) {
+				return false;
+			}
+		}else {
+			Certificate issuer = certificateRepo.findById(dto.getIssuerSerial()).get();
+			if(!BCrypt.checkpw(dto.getIssuerPrivateKeyPass(), issuer.getPrivateKeyPass()) || !BCrypt.checkpw(dto.getIssuerKeystorePass(), issuer.getKeystorePass())) {
+				return false;
+			}
+
+			if(cert.getIssuer().getSerialNumber() != dto.getIssuerSerial()) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 	
 }

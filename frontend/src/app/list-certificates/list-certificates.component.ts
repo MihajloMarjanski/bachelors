@@ -22,35 +22,11 @@ export class ListCertificatesComponent implements OnInit {
     this._certificateService.getAll().subscribe(data => this.certificates = data);
   }
 
-  getSubordinateCertificates() {
-    /*this._certificateService.getSubordinateCertificates(this.currentUser).subscribe(data => this.allCertificates = data); */
-  }
 
-  revokeCertificate(serialNumber: number) {
-    this._certificateService.revokeCertificate(serialNumber).subscribe(data => console.log("Revoked"),
-      error => console.log(error));
+  revokeCertificate(certificate: any) {
+    this.router.navigate(['/revoke'],{state: {data: certificate}})
   }
-
-  logout(){
-    /*localStorage.clear();*/
-  }
-
-  checkValidity(serialNumber: number){
-    /*this._certificateService.checkValidity(serialNumber).subscribe(data => alert(data),
-      error => console.log(error));*/
-  }
-
-  download(alias : string){
-    this._certificateService.getJKS(alias).subscribe(response =>{
-      //let fileName = response.headers.get('content-disposition')?.split(';')[1].split('=')[1];
-      let fileName = alias+'.zip'
-      let blob = new Blob([response], {
-        type: 'application/zip'
-      });
-      let a = document.createElement('a');
-      a.download = fileName;
-      a.href = window.URL.createObjectURL(blob);
-      a.click();
-    });
+  download(certificate: any){
+    this.router.navigate(['/download'],{state: {data: certificate}})
   }
 }

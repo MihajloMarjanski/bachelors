@@ -61,7 +61,7 @@ export class AddCertificateComponent implements OnInit {
 
 
   createSubCertificate() {
-    this._certificateService.createSubCertificate(this.CertDTO).subscribe(data => console.log(data),
+    this._certificateService.createSubCertificate(this.CertDTO).subscribe(data => this.router.navigateByUrl("/home"),
       error => alert(error.error));
   }
 }

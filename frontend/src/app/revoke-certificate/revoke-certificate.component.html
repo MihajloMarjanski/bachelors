@@ -1,0 +1,28 @@
+<h3>Certificate information:</h3>
+<div class="col-md-6">
+    <label class="input_label">
+        <span class="keep_hovered">Certificat Serial: </span>
+        <input type="text" name="issuerPrivateKeyPass" [(ngModel)]="RevokeDTO.certificateSerial" required="required">
+    </label>
+</div>
+<h3>Issuer Information:</h3>
+<div class="col-md-6">
+    <label class="input_label">
+        <span class="keep_hovered">Issuer Keystore Password: </span>
+        <input type="password" name="issuerKeystorePass" [(ngModel)]="RevokeDTO.issuerKeystorePass" required="required">
+    </label>
+</div>
+<div class="col-md-6">
+    <label class="input_label">
+        <span class="keep_hovered">Issuer Private Key Password: </span>
+        <input type="password" name="issuerPrivateKeyPass" [(ngModel)]="RevokeDTO.issuerPrivateKeyPass" required="required">
+    </label>
+</div>
+<div class="col-md-6">
+    <label class="input_label">
+        <span class="keep_hovered">Issuer Serial: </span>
+        <input type="text" name="issuerPrivateKeyPass" [(ngModel)]="RevokeDTO.issuerSerial" required="required">
+    </label>
+</div>
+
+<button style="width: 100%;" (click)="log()">Revoke</button>

@@ -10,8 +10,8 @@
           <th scope="col">Valid From</th>
           <th scope="col">Valid To</th>
           <th scope="col">Issuer</th>
-          <th scope="col">Revoke</th>
-          <th scope="col">Download JKS</th>
+          <th scope="col">Rovacation</th>
+          <th scope="col">Download</th>
         </tr>
       </thead>
       <tbody>
@@ -25,8 +25,9 @@
           <td>{{c.validUntil | date:'shortDate'}}</td>
           <td *ngIf="!c.issuer">SELF SIGNED</td>
           <td *ngIf="c.issuer">{{c.issuer.serialNumber}}</td>
-          <td><input type="button" value="Revoke" *ngIf="!c.revoked" (click)="revokeCertificate(c.serialNumber)"/></td>
-          <td><input type="button" value="Download" (click)="download(c.alias)"/></td>
+          <td style="color:red" *ngIf="c.revoked">REVOKED</td>
+          <td *ngIf="!c.revoked"><input type="button" value="Revoke" (click)="revokeCertificate(c)"/></td>
+          <td><input type="button" value="Download" (click)="download(c)"/></td>
         </tr>
       </tbody>
     </table>

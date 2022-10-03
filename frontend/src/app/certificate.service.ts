@@ -55,4 +55,10 @@ export class CertificateService {
     return this.http.get<any>("http://localhost:8080/api/certificates/revokeCert/"+serial,this.getAuthoHeader());
   }
 
+  revokeCertificate2(revokeDTO: any): Observable<any> {
+    return this.http.post<any>("http://localhost:8080/api/certificates/revokeCert/", JSON.stringify(revokeDTO),this.getAuthoHeader());
+  }
+  getJKS2(keyStoreDTO: any): Observable<any> {
+    return this.http.post<any>("http://localhost:8090/api/certificates/jks", JSON.stringify(keyStoreDTO),this.getDownalodOptions());
+  }
 }

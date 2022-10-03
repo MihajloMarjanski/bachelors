@@ -36,6 +36,7 @@ import org.bouncycastle.jce.ECNamedCurveTable;
 import org.bouncycastle.jce.spec.ECParameterSpec;
 import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemReader;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -44,23 +45,37 @@ import helper.IssuerData;
 import helper.KeyStoreReader;
 import helper.KeyStoreWriter;
 import helper.SubjectData;
+import model.Certificate;
 import model.CertificateType;
 import model.CreateRootDTO;
 import model.CreateSubCertificateDTO;
+import model.DownloadDTO;
 import model.KeyPairResponseDTO;
 import model.PublicKeyResponseDTO;
+import repo.CertificateRepo;
 
 @Service
 public class CertificateService {
+	
+	@Autowired
+	private CertificateRepo certificateRepo;
 	
 	public String print() {
 		System.out.println("NESTO SE DESILO");
 		return "EVOGA";
 	}
 
+	public boolean authorizeDownload(DownloadDTO dto) {
+		Certificate cert = certificateRepo.findById(dto.getSerial()).get();
+		if(!BCrypt.checkpw(dto.getPrivateKeyPass(), cert.getPrivateKeyPass()) || !BCrypt.checkpw(dto.getKeystorePass(), cert.getKeystorePass())) {
+			return false;
+		}
+		return true;
+	}
 	
-	
-	
+	public String getAliasForCertificate(Integer serial) {
+		return certificateRepo.findById(serial).get().getAlias();
+	}
 	
 	public void generateRootCertificate(CreateRootDTO certificate) {
 		KeyStoreWriter writer = new KeyStoreWriter();
@@ -341,5 +356,7 @@ public class CertificateService {
 		}
 		return usage;
 	}
+
+
 
 }

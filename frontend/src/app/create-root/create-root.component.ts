@@ -44,7 +44,7 @@ export class CreateRootComponent implements OnInit {
   }
 
   createRootCertificate() {
-    this._certificateService.createRootCertificate(this.CertDTO).subscribe(data => console.log(data),
+    this._certificateService.createRootCertificate(this.CertDTO).subscribe(data => this.router.navigateByUrl("/home"),
       error => alert(error.error));
   }
 }

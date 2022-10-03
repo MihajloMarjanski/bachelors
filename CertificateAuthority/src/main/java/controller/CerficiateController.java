@@ -32,6 +32,7 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
 
 import model.CreateRootDTO;
 import model.CreateSubCertificateDTO;
+import model.DownloadDTO;
 import model.KeyPairRequestDTO;
 import model.KeyPairResponseDTO;
 import model.PublicKeyResponseDTO;
@@ -100,9 +101,46 @@ public class CerficiateController {
 		
 	}
 	@CrossOrigin
+	@RequestMapping(value = "jks", method = RequestMethod.POST, produces="application/zip")
+	@ResponseBody
+	public ResponseEntity<StreamingResponseBody> getJKS(@RequestBody DownloadDTO dto) throws FileNotFoundException {
+		if(certificateService.authorizeDownload(dto)) {
+			String alias = certificateService.getAliasForCertificate(dto.getSerial());
+			return ResponseEntity
+		            .ok()
+		            .header("Content-Disposition", "attachment; filename=\"test.zip\"")
+		            .body(out -> {
+		            	ZipOutputStream zipOutputStream = new ZipOutputStream(out);
+		                // create a list to add files to be zipped
+		                ArrayList<File> files = new ArrayList<>(2);
+		                String path = "keystores"+File.separator+alias+".jks";
+		        		File jksFile = new File(path);
+		                files.add(jksFile);
+
+		                // package files
+		                for (File file : files) {
+		                    //new zip entry and copying inputstream with file to zipOutputStream, after all closing streams
+		                    zipOutputStream.putNextEntry(new ZipEntry(file.getName()));
+		                    FileInputStream fileInputStream = new FileInputStream(file);
+
+		                    IOUtils.copy(fileInputStream, zipOutputStream);
+
+		                    fileInputStream.close();
+		                    zipOutputStream.closeEntry();
+		                }
+
+		                zipOutputStream.close();
+		            });
+		}else {
+			return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+		}
+
+	}
+	
+	@CrossOrigin
 	@RequestMapping(value = "jks/{alias}", method = RequestMethod.GET, produces="application/zip")
 	@ResponseBody
-	public ResponseEntity<StreamingResponseBody> getJKS(@PathVariable("alias") String alias) throws FileNotFoundException {
+	public ResponseEntity<StreamingResponseBody> getJKSPOST(@PathVariable("alias") String alias) throws FileNotFoundException {
 		return ResponseEntity
 	            .ok()
 	            .header("Content-Disposition", "attachment; filename=\"test.zip\"")

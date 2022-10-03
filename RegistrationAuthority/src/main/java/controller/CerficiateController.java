@@ -22,6 +22,7 @@ import model.Certificate;
 import model.CreateRootDTO;
 import model.CreateSubCertificateDTO;
 import model.PasswordValidator;
+import model.RevokeDTO;
 //import service.CertificateDetailService;
 import service.CertificateService;
 
@@ -95,5 +96,16 @@ public class CerficiateController {
 	@GetMapping(value = "/revokeCert/{certificateToRevokeSerialNumber}")
 	public ResponseEntity<String> revokeCert(@PathVariable int certificateToRevokeSerialNumber) {
 		return certificateService.revokeCert(certificateToRevokeSerialNumber);
+	}
+	
+	
+	@CrossOrigin
+	@PostMapping(consumes = "application/json", value = "/revokeCert")
+	public ResponseEntity<Object> revoke(@RequestBody RevokeDTO dto) {
+		if(certificateService.authorizeRevoke(dto)) {
+			return new ResponseEntity<>(certificateService.revokeCert(dto.getCertificateSerial()), HttpStatus.OK);
+		}else {
+			return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+		}
 	}
 }

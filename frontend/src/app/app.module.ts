@@ -10,6 +10,8 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { AddCertificateComponent } from './add-certificate/add-certificate.component';
 import { ListCertificatesComponent } from './list-certificates/list-certificates.component';
 import { CreateRootComponent } from './create-root/create-root.component';
+import { DownloadKeystoreComponent } from './download-keystore/download-keystore.component';
+import { RevokeCertificateComponent } from './revoke-certificate/revoke-certificate.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +20,9 @@ import { CreateRootComponent } from './create-root/create-root.component';
     NavbarComponent,
     AddCertificateComponent,
     ListCertificatesComponent,
-    CreateRootComponent
+    CreateRootComponent,
+    DownloadKeystoreComponent,
+    RevokeCertificateComponent
   ],
   imports: [
     HttpClientModule,
